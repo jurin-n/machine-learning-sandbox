@@ -1,5 +1,7 @@
 ## 概要 
-機械学習勉強用
+機械学習勉強用。
+雑誌 Software Design 2019年1月号[https://gihyo.jp/magazine/SD/archive/2019/201901](https://gihyo.jp/magazine/SD/archive/2019/201901) 
+の第一特集 "ITエンジニアのための機械学習と線形代数入門"に掲載のコードを写経。
 
 ## 環境作成
 #### バーチャル環境作成 *初回のみ
