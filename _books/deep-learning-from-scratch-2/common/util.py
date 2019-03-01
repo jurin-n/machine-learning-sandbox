@@ -98,3 +98,15 @@ def ppmi(C, verbose=False, eps=1e-8):
                     print('%.1f%% done' % (100*cnt/total))
 
     return M
+
+
+def clip_grads(grads, max_norm):
+    total_norm = 0
+    for grad in grads:
+        total_norm += np.sum(grad ** 2)
+    total_norm = np.sqrt(total_norm)
+
+    rate = max_norm / (total_norm + 1e-6)
+    if rate < 1:
+        for grad in grads:
+            grad *= rate
