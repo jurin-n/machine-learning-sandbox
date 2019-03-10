@@ -2,6 +2,7 @@
 import numpy as np
 from common.functions import softmax, cross_entropy_error
 
+
 class MatMul:
     def __init__(self, W):
         self.params = [W]
@@ -20,6 +21,7 @@ class MatMul:
         dW = np.dot(self.x.T, dout)
         self.grads[0][...] = dW
         return dx
+
 
 class SoftmaxWithLoss:
     def __init__(self):
@@ -47,6 +49,29 @@ class SoftmaxWithLoss:
         dx = dx / batch_size
 
         return dx
+
+
+class SigmoidWithLoss:
+    def __init__(self):
+        self.params, self.grads = [], []
+        self.loss = None
+        self.y = None  # sigmoidの出力
+        self.t = None  # 教師データ
+
+    def forward(self, x, t):
+        self.t = t
+        self.y = 1 / (1 + np.exp(-x))
+
+        self.loss = cross_entropy_error(np.c_[1 - self.y, self.y], self.t)
+
+        return self.loss
+
+    def backward(self, dout=1):
+        batch_size = self.t.shape[0]
+
+        dx = (self.y - self.t) * dout / batch_size
+        return dx
+
 
 class Embedding:
     def __init__(self, W):
@@ -88,3 +113,16 @@ class EmbeddingDot:
         self.embed.backward(dtarget_W)
         dh = dout * target_W
         return dh
+
+
+def NegativeSamplingLoss:
+    def __init__(self, W, corpus, power=0.75, sample_size=5):
+        self.sample_size = sample_size
+        self.sampler = UnigramSampler(corpus, power, sample_size)
+        self.loss_layers = [SigmoidWithLoss() for _ in range(sample_size + 1)]
+        self.embed_dot_layers = [EmbeddingDot(W) for _ in range(sample_size + 1)]
+
+        self.params, self.grads = [], []
+        for layer in self.embed_dot_layers:
+            self.params += layer.params
+            self.grads += layer.grads
